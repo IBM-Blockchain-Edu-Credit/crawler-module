@@ -1,10 +1,15 @@
 import requests
 import time
+import json
 
-username = ""
-password = ""
+with open("login_info", 'r') as f:
+  login = json.loads(f.read())
 
-st_date = "2019-11-01"
+print(login)
+username = login.get('id')
+password = login.get('pw')
+
+st_date = "2019-01-01"
 ed_date = "2020-01-01"
 
 with requests.Session() as s:
@@ -36,5 +41,29 @@ with requests.Session() as s:
     response = s.request("GET", url)
 
 
-result_json = response.json()
-print(result_json)
+print("Request Completed!===========")
+
+result = response.json()
+# print(result_json)
+
+result_array = []
+for key in result.keys():
+    student = result[key]
+    stu_act = student['activity_rollups_by_subject']
+    try:
+        stu_Dict = { 
+            "full_name": student['full_name'],
+            "level": student['level'],
+            "star_earned": stu_act['overview']['stars_earned'],
+            "logins": stu_act['overview']['logins'],
+            "listen": stu_act['reading']['listen'],
+            "read": stu_act['reading']['read'],
+            "worksheet": stu_act['reading']['worksheet'],
+            "quiz": stu_act['reading']['quiz'],
+            "passed_quiz_count": stu_act['reading']['passed_quiz_count'],
+            "practice_recording": stu_act['reading']['practice_recording']
+        }
+    except:
+        continue
+    print(stu_Dict)
+    result_array.append(stu_Dict)
