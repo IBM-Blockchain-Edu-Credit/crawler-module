@@ -52,6 +52,7 @@ for key in result.keys():
     stu_act = student['activity_rollups_by_subject']
     try:
         stu_Dict = { 
+            "sid": student['student_id'],
             "full_name": student['full_name'],
             "level": student['level'],
             "star_earned": stu_act['overview']['stars_earned'],
